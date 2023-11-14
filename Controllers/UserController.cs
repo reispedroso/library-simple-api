@@ -47,7 +47,7 @@ namespace Ecc.Controllers
         }
 
 
-        [HttpGet("getusers")]
+        [HttpGet("getallusers")]
         public async Task<IActionResult> GetAllUsers()
         {
             try
