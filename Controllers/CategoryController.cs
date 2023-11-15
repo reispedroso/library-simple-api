@@ -81,7 +81,7 @@ public class CategoryController : ControllerBase
         }
     }
 
-    [HttpDelete("deletecategory")]
+    [HttpDelete("deletecategory/{categoryId}")]
     public async Task<ActionResult> DeleteCategory(Guid categoryId)
     {
         try

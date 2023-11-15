@@ -51,8 +51,12 @@ public class CategoryRepository : ICategoryRepository
     }
     public async Task<bool> DeleteCategory(Guid categoryId)
     {
-        var category = _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == categoryId);
-        _context.Remove(category);
+        var deleteThisCategory = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == categoryId);
+        if(deleteThisCategory == null)
+        {
+            return false;
+        }
+        _context.Categories.Remove(deleteThisCategory);
         await _context.SaveChangesAsync();
         return true;
     }

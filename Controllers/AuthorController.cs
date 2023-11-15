@@ -42,7 +42,7 @@ public class AuthorController : ControllerBase
         }
     }
 
-    [HttpGet("getauthorbyid")]
+    [HttpGet("getauthorbyid/{authorId}")]
     public async Task<ActionResult<AuthorModel>> GetAuthorById(Guid authorId)
     {
          try
@@ -55,7 +55,7 @@ public class AuthorController : ControllerBase
             return BadRequest($"We catch the following error: {ex.Message}");
         }
     }
-    [HttpPut]
+    [HttpPut("updateauthor/{authorId}")]
     public async Task<ActionResult<AuthorModel>> UpdateAuthor(Guid authorId, AuthorModel authorModel)
     {
         try
@@ -69,21 +69,24 @@ public class AuthorController : ControllerBase
         }
     }
     
-    [HttpDelete]
+    [HttpDelete("deleteauthor/{authorId}")]
     public async Task<ActionResult> DeleteAuthor (Guid authorId)
     {
-         try
+          try
         {
-            var sucess = await _authorRepository.DeleteAuthor(authorId);
-            if(!sucess)
+            var success = await _authorRepository.DeleteAuthor(authorId);
+
+            if (!success)
             {
-                return Conflict("Nao vai da nao pai");
+                return NotFound($"Author with this Id:{authorId} was not found");
             }
-            return Ok("user deleted");
+
+            return Ok($"Author {authorId} deleted. ");
+
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            return BadRequest($"We catch the following error: {ex.Message}");
+            return BadRequest($"We catch this erros: {ex.Message}");
         }
     }
     

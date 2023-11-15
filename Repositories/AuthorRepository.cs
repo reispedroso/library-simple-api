@@ -52,7 +52,7 @@ public class AuthorRepository : IAuthorRepository
     }
     public async Task<bool> DeleteAuthor(Guid authorId)
     {
-        var author = _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == authorId);
+        var author = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == authorId);
         _context.Remove(author);
         await _context.SaveChangesAsync();
         return true;
