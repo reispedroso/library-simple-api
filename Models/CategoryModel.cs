@@ -6,6 +6,6 @@ namespace Ecc;
 public class CategoryModel 
 {
     public Guid CategoryId { get; set; }
-    public string? Name { get; set; }
+    public string Name { get; set; }
     
 }

@@ -52,7 +52,7 @@ namespace Ecc.Controllers
         {
             try
             {
-                var users = await _userRepository.GetAllUsersAsync();
+                List<UserModel> users = await _userRepository.GetAllUsersAsync();
                 return Ok(users);
             }
             catch (Exception ex)
