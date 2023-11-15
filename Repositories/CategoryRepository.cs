@@ -23,7 +23,17 @@ public class CategoryRepository : ICategoryRepository
 
         return category;
     }
-    public async Task<CategoryModel> UpdateCategory(Guid categoryId, CategoryModel categoryModel)
+    public async Task<List<CategoryModel>> GetAllCategories()
+    {
+        var categories = await _context.Categories.ToListAsync();
+        return categories;
+    }
+    public async Task<CategoryModel> GetCategoryById(Guid categoryId)
+    {
+        var categoryById = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == categoryId); 
+        return categoryById;
+    }
+     public async Task<CategoryModel> UpdateCategory(Guid categoryId, CategoryModel categoryModel)
     {
         var updatedCategory = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == categoryId);
 
@@ -39,24 +49,11 @@ public class CategoryRepository : ICategoryRepository
         await _context.SaveChangesAsync();
         return updatedCategory;
     }
-
-    public async Task<List<CategoryModel>> GetCategories()
-    {
-        var categories = await _context.Categories.ToListAsync();
-        return categories;
-    }
-
     public async Task<bool> DeleteCategory(Guid categoryId)
     {
         var category = _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == categoryId);
         _context.Remove(category);
         await _context.SaveChangesAsync();
         return true;
-    }
-
-    public async Task<CategoryModel> GetCategoryById(Guid categoryId)
-    {
-        var categoryById = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == categoryId); 
-        return categoryById;
     }
 }

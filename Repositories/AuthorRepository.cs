@@ -24,31 +24,20 @@ public class AuthorRepository : IAuthorRepository
 
         return author;
     }
-
-    public async Task<bool> DeleteAuthor(Guid authorId)
-    {
-        var author = _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == authorId);
-        _context.Remove(author);
-        await _context.SaveChangesAsync();
-        return true;
-    }
-
     public async Task<List<AuthorModel>> GetAllAuthors()
     {
         List<AuthorModel> author = await _context.Authors.ToListAsync();
         return author;
     }
-
     public async Task<AuthorModel> GetAuthorById(Guid authorId)
     {
         var author = await _context.Authors.FirstAsync(a => a.AuthorId == authorId);
         return author;
     }
-
     public async Task<AuthorModel> UpdateAuthor(Guid authorId, AuthorModel authorModel)
     {
         var updatedAuthor = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == authorId);
-        if(updatedAuthor != null && updatedAuthor.Name != authorModel.Name)
+        if (updatedAuthor != null && updatedAuthor.Name != authorModel.Name)
         {
             updatedAuthor.Name = authorModel.Name;
         }
@@ -61,4 +50,12 @@ public class AuthorRepository : IAuthorRepository
         return updatedAuthor;
 
     }
+    public async Task<bool> DeleteAuthor(Guid authorId)
+    {
+        var author = _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == authorId);
+        _context.Remove(author);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
 }

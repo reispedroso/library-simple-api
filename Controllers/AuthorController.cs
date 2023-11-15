@@ -13,7 +13,7 @@ public class AuthorController : ControllerBase
     }
 
     [HttpPost("createauthor")]
-    public async Task<IActionResult> CreateAuthor(AuthorModel authorModel)
+    public async Task<ActionResult<AuthorModel>> CreateAuthor(AuthorModel authorModel)
     {
         if(!ModelState.IsValid || authorModel == null)
         {
@@ -27,4 +27,64 @@ public class AuthorController : ControllerBase
         }
         return Ok(author);
     }
+
+    [HttpGet("getallauthors")]
+    public async Task<ActionResult<IEnumerable<AuthorModel>>> GetAllUsers()
+    {
+        try
+        {
+            var authors = await _authorRepository.GetAllAuthors();
+            return authors;
+        }
+        catch(Exception ex)
+        {
+            return BadRequest($"We catch the following error: {ex.Message}");
+        }
+    }
+
+    [HttpGet("getauthorbyid")]
+    public async Task<ActionResult<AuthorModel>> GetAuthorById(Guid authorId)
+    {
+         try
+        {
+            var author = await _authorRepository.GetAuthorById(authorId);
+            return author;
+        }
+        catch(Exception ex)
+        {
+            return BadRequest($"We catch the following error: {ex.Message}");
+        }
+    }
+    [HttpPut]
+    public async Task<ActionResult<AuthorModel>> UpdateAuthor(Guid authorId, AuthorModel authorModel)
+    {
+        try
+        {
+            var updatedAuthor = await _authorRepository.UpdateAuthor(authorId, authorModel);
+            return updatedAuthor;
+        }
+        catch(Exception ex)
+        {
+            return BadRequest($"We catch the following error: {ex.Message}");
+        }
+    }
+    
+    [HttpDelete]
+    public async Task<ActionResult> DeleteAuthor (Guid authorId)
+    {
+         try
+        {
+            var sucess = await _authorRepository.DeleteAuthor(authorId);
+            if(!sucess)
+            {
+                return Conflict("Nao vai da nao pai");
+            }
+            return Ok("user deleted");
+        }
+        catch(Exception ex)
+        {
+            return BadRequest($"We catch the following error: {ex.Message}");
+        }
+    }
+    
 }     

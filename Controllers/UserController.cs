@@ -22,9 +22,8 @@ namespace Ecc.Controllers
             _passwordHasher = passwordHasher;
         }
 
-
         [HttpPost("createuser")]
-        public async Task<IActionResult> CreateUser([FromBody] UserModel userModel)
+        public async Task<ActionResult<UserModel>> CreateUser([FromBody] UserModel userModel)
         {
             if (!ModelState.IsValid || userModel == null)
             {
@@ -46,9 +45,8 @@ namespace Ecc.Controllers
 
         }
 
-
         [HttpGet("getallusers")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetAllUsers()
         {
             try
             {
@@ -61,9 +59,8 @@ namespace Ecc.Controllers
             }
         }
 
-
         [HttpGet("getuserbyemail/{email}")]
-        public async Task<IActionResult> GetUserByEmail(string email)
+        public async Task<ActionResult<UserModel>> GetUserByEmail(string email)
         {
             try
             {
@@ -88,7 +85,7 @@ namespace Ecc.Controllers
         }
 
         [HttpPut("updateuser/{userId}")]
-        public async Task<IActionResult> UpdateUser(Guid userId, [FromBody] UserModel updatedUser)
+        public async Task<ActionResult<UserModel>> UpdateUser(Guid userId, [FromBody] UserModel updatedUser)
         {
             try
             {
@@ -113,7 +110,7 @@ namespace Ecc.Controllers
         }
 
         [HttpDelete("deleteuser/{userId}")]
-        public async Task<IActionResult> DeleteUser(Guid userId)
+        public async Task<ActionResult> DeleteUser(Guid userId)
         {
            try{
             var success = await _userRepository.DeleteUserAsync(userId);

@@ -11,8 +11,10 @@ public class CategoryController : ControllerBase
     {
         _categoryRepository = categoryRepository;
     }
+
+
     [HttpPost("createcategory")]
-    public async Task<IActionResult> CreateCategory([FromBody] CategoryModel categoryModel)
+    public async Task<ActionResult<CategoryModel>> CreateCategory([FromBody] CategoryModel categoryModel)
     {
         try
         {
@@ -34,27 +36,13 @@ public class CategoryController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    [HttpPut("updatecategory/{categoryId}")]
-    public async Task<IActionResult> UpdateCategory(Guid categoryId, [FromBody] CategoryModel categoryModel)
-    {
-        try
-        {
-            var updatecategory = await _categoryRepository.UpdateCategory(categoryId, categoryModel);
-           
-            return Ok(updatecategory);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
 
     [HttpGet("getcategories")]
-    public async Task<IActionResult> GetAllCategories()
+    public async Task<ActionResult<IEnumerable<CategoryModel>>> GetAllCategories()
     {
         try
         {
-            List<CategoryModel> categories = await _categoryRepository.GetCategories();
+            List<CategoryModel> categories = await _categoryRepository.GetAllCategories();
             return Ok(categories);
         }
         catch (Exception ex)
@@ -63,22 +51,8 @@ public class CategoryController : ControllerBase
         }
     }
 
-    [HttpDelete("deletecategory")]
-    public async Task<IActionResult> DeleteCategory(Guid categoryId)
-    {
-        try 
-        {
-            var category = await _categoryRepository.DeleteCategory(categoryId);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        return Ok("Category deleted");
-    }
-
     [HttpGet("getcategorybyid/{categoryId}")]
-    public async Task<IActionResult> GetCategoryById(Guid categoryId)
+    public async Task<ActionResult<CategoryModel>> GetCategoryById(Guid categoryId)
     {
         try
         {
@@ -89,6 +63,35 @@ public class CategoryController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
-        
+
+    }
+
+    [HttpPut("updatecategory/{categoryId}")]
+    public async Task<ActionResult<CategoryModel>> UpdateCategory(Guid categoryId, [FromBody] CategoryModel categoryModel)
+    {
+        try
+        {
+            var updatecategory = await _categoryRepository.UpdateCategory(categoryId, categoryModel);
+
+            return Ok(updatecategory);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("deletecategory")]
+    public async Task<ActionResult> DeleteCategory(Guid categoryId)
+    {
+        try
+        {
+            var category = await _categoryRepository.DeleteCategory(categoryId);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        return Ok("Category deleted");
     }
 }

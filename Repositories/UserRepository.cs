@@ -55,7 +55,6 @@ namespace Ecc.Repositories
             var users = await _context.Users.ToListAsync();
             return users;
         }
-
         public async Task<UserModel> UpdateUserAsync(Guid userId, UserModel updatedUser)
         {
             var existingUser = await _context.Users.FirstOrDefaultAsync(e => e.Id == userId);
@@ -74,7 +73,6 @@ namespace Ecc.Repositories
 
             return existingUser;
         }
-
         public async Task<bool> DeleteUserAsync(Guid userId)
         {
             var deleteThisUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);

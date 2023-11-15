@@ -28,8 +28,26 @@ public class BookRepository : IBookRepository
         await _context.SaveChangesAsync();
         return book;
     }
-
-    public async Task<BookModel> UpdateBook(Guid bookId, BookModel bookModel)
+    public async Task<List<BookModel>> GetAllBooks()
+    {
+        var books = await _context.Books.ToListAsync();
+        foreach(var book in books)
+        {
+             book.PublishDate = book.PublishDate.AddHours(-3);
+        }
+        return books;
+    }
+    public async Task<BookModel> GetBookById(Guid bookId)
+    {
+        var book = await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
+        if(book != null)
+        {
+            book.PublishDate = book.PublishDate.AddHours(-3);
+            return book;
+        }
+        return book;
+    }
+      public async Task<BookModel> UpdateBook(Guid bookId, BookModel bookModel)
     {
         var book = await _context.Books.FirstOrDefaultAsync(i => i.BookId == bookId);
         if (book != null)
@@ -41,8 +59,7 @@ public class BookRepository : IBookRepository
         await _context.SaveChangesAsync();
         return book;
     }
-
-    public async Task<bool> DeleteBook(Guid bookId)
+     public async Task<bool> DeleteBook(Guid bookId)
     {
         var book = await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
 
@@ -54,26 +71,5 @@ public class BookRepository : IBookRepository
         _context.Books.Remove(book);
         await _context.SaveChangesAsync();
         return true;
-    }
-
-    public async Task<List<BookModel>> GetAllBooks()
-    {
-        var books = await _context.Books.ToListAsync();
-        foreach(var book in books)
-        {
-             book.PublishDate = book.PublishDate.AddHours(-3);
-        }
-        return books;
-    }
-
-    public async Task<BookModel> GetBookById(Guid bookId)
-    {
-        var book = await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
-        if(book != null)
-        {
-            book.PublishDate = book.PublishDate.AddHours(-3);
-            return book;
-        }
-        return book;
     }
 }

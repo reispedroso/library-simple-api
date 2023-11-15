@@ -14,7 +14,7 @@ public class BookController : ControllerBase
         _bookRepository = bookRepository;
     }
     [HttpPost("createbook")]
-    public async Task<IActionResult> CreateNewBook([FromBody] BookModel bookModel)
+    public async Task<ActionResult<BookModel>> CreateNewBook([FromBody] BookModel bookModel)
     {
         if (!ModelState.IsValid || bookModel == null)
         {
@@ -29,9 +29,43 @@ public class BookController : ControllerBase
 
         return Ok(book);
     }
+// ---------
+    [HttpGet("getallbooks")]
+    public async Task<ActionResult<IEnumerable<BookModel>>> GetAllUsers()
+    {
+        try
+        {
+            var books = await _bookRepository.GetAllBooks();
+            if (books == null)
+            {
+                return NotFound($"No book was found");
+            }
+            return Ok(books);
 
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"We catch this erros: {ex.Message}");
+        }
+
+    }
+// ---------
+    [HttpGet("getbookbyid/{bookId}")]
+    public async Task<ActionResult<BookModel>> GetBookById(Guid bookId)
+    {
+        try
+        {
+            var book = await _bookRepository.GetBookById(bookId);
+            return Ok(book);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"We catch this erros: {ex.Message}");
+        }
+    }
+// ---------
     [HttpPut("updatebook/{bookId}")]
-    public async Task<IActionResult> UpdateBook(Guid bookId, [FromBody] BookModel bookModel)
+    public async Task<ActionResult<BookModel>> UpdateBook(Guid bookId, [FromBody] BookModel bookModel)
     {
         try
         {
@@ -49,9 +83,9 @@ public class BookController : ControllerBase
             return BadRequest("do something right man");
         }
     }
-
+// ---------
     [HttpDelete("deletebook/{bookId}")]
-    public async Task<IActionResult> DeleteUser(Guid bookId)
+    public async Task<ActionResult> DeleteUser(Guid bookId)
     {
         try
         {
@@ -67,41 +101,9 @@ public class BookController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest("do something right man");
+            return BadRequest($"We catch this erros: {ex.Message}");
         }
     }
 
-    [HttpGet("getallbooks")]
-    public async Task<IActionResult> GetAllUsers()
-    {
-        try
-        {
-            var books = await _bookRepository.GetAllBooks();
-            if (books == null)
-            {
-                return NotFound($"No book was found");
-            }
-            return Ok(books);
 
-        }
-        catch (Exception ex)
-        {
-            return BadRequest("do something right man");
-        }
-
-    }
-
-    [HttpGet("getbookbyid/{bookId}")]
-    public async Task<IActionResult> GetBookById(Guid bookId)
-    {
-        try 
-        {
-            var book = await _bookRepository.GetBookById(bookId);
-            return Ok(book);
-        }
-         catch (Exception ex)
-        {
-            return BadRequest("do something right man");
-        }
-    }
 }
