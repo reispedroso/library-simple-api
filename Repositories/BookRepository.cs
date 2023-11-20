@@ -1,75 +1,49 @@
 
 using System.Security.Cryptography.X509Certificates;
-using System.Web.Http.Results;
 using Ecc.Context;
 using Ecc.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecc.Repositories;
 
-public class BookRepository : IBookRepository
+public class BookRepository : IRepository<BookModel> 
 {
     private readonly AppDbContext _context;
     public BookRepository(AppDbContext context)
     {
         _context = context;
     }
-    public async Task<BookModel> CreateNewBook(BookModel bookModel)
-    {
-        var book = new BookModel
+
+    public async Task<BookModel> Create(BookModel book)
+     {
+        var newBook = new BookModel
         {
-            Name = bookModel.Name,
-            PublishDate = DateTimeUtils.ReplaceMinValueWithFutureDate(bookModel.PublishDate),
-            CategoryId = bookModel.CategoryId,
-            AuthorId = bookModel.AuthorId
+            Name = book.Name,
+            PublishDate = DateTimeUtils.ReplaceMinValueWithFutureDate(book.PublishDate),
+            CategoryId = book.CategoryId,
+            AuthorId = book.AuthorId
         };
 
-        await _context.Books.AddAsync(book);
+        await _context.Books.AddAsync(newBook);
         await _context.SaveChangesAsync();
-        return book;
+        return newBook;
     }
-    public async Task<List<BookModel>> GetAllBooks()
+    public Task Delete(Guid guid)
     {
-        var books = await _context.Books.ToListAsync();
-        foreach(var book in books)
-        {
-             book.PublishDate = book.PublishDate.AddHours(-3);
-        }
-        return books;
+        throw new NotImplementedException();
     }
-    public async Task<BookModel> GetBookById(Guid bookId)
-    {
-        var book = await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
-        if(book != null)
-        {
-            book.PublishDate = book.PublishDate.AddHours(-3);
-            return book;
-        }
-        return book;
-    }
-      public async Task<BookModel> UpdateBook(Guid bookId, BookModel bookModel)
-    {
-        var book = await _context.Books.FirstOrDefaultAsync(i => i.BookId == bookId);
-        if (book != null)
-        {
-            book.Name = bookModel.Name;
-        }
 
-        _context.Books.Update(book);
-        await _context.SaveChangesAsync();
-        return book;
-    }
-     public async Task<bool> DeleteBook(Guid bookId)
+    public Task<IEnumerable<BookModel>> GetAll()
     {
-        var book = await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
+        throw new NotImplementedException();
+    }
 
-        if (book == null)
-        {
-            return false;
-        }
+    public Task<BookModel> GetById(Guid guid)
+    {
+        throw new NotImplementedException();
+    }
 
-        _context.Books.Remove(book);
-        await _context.SaveChangesAsync();
-        return true;
+    public Task<BookModel> Update(Guid guid, BookModel entity)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -27,10 +27,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IBookRepository, BookRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
-builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
-
+builder.Services.AddScoped<IRepository<AuthorModel>, AuthorRepository>();
 builder.Services.AddScoped<PasswordHashService>();
 builder.Services.AddRefitClient<IViaCepIntegrationRefit>().ConfigureHttpClient(c => {
     c.BaseAddress = new Uri("https://viacep.com.br");

@@ -5,57 +5,58 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ecc.Repositories;
 
-public class AuthorRepository : IAuthorRepository
+public class AuthorRepository : IRepository<AuthorModel>
 {
     private readonly AppDbContext _context;
     public AuthorRepository(AppDbContext context)
     {
         _context = context;
     }
-    public async Task<AuthorModel> CreateAuthor(AuthorModel authorModel)
+
+    public async Task<AuthorModel> Create(AuthorModel author)
     {
-        var author = new AuthorModel
+        if (author == null)
         {
-            Name = authorModel.Name
+            throw new Exception("My ng the author cannot be null...");
+        }
+        var newAuthor = new AuthorModel 
+        {
+            Name = author.Name
         };
 
-        await _context.Authors.AddAsync(author);
+        await _context.Authors.AddAsync(newAuthor);
         await _context.SaveChangesAsync();
+        return newAuthor;
+    }
+  
+    public async Task<IEnumerable<AuthorModel>> GetAll()
+    {
+        List<AuthorModel> authors = await _context.Authors.ToListAsync() ?? throw new Exception("My ng there's no author yet...");
+        return authors;
+        
+    }
 
+    public async Task<AuthorModel> GetById(Guid guid)
+    {
+        var author = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == guid) ?? throw new Exception("Didnt found this guy");
         return author;
     }
-    public async Task<List<AuthorModel>> GetAllAuthors()
-    {
-        List<AuthorModel> author = await _context.Authors.ToListAsync();
-        return author;
-    }
-    public async Task<AuthorModel> GetAuthorById(Guid authorId)
-    {
-        var author = await _context.Authors.FirstAsync(a => a.AuthorId == authorId);
-        return author;
-    }
-    public async Task<AuthorModel> UpdateAuthor(Guid authorId, AuthorModel authorModel)
-    {
-        var updatedAuthor = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == authorId);
-        if (updatedAuthor != null && updatedAuthor.Name != authorModel.Name)
-        {
-            updatedAuthor.Name = authorModel.Name;
-        }
-        else
-        {
-            throw new BadHttpRequestException("that ain't gonna work");
-        }
-        _context.Authors.Update(updatedAuthor);
-        await _context.SaveChangesAsync();
-        return updatedAuthor;
 
-    }
-    public async Task<bool> DeleteAuthor(Guid authorId)
+    public async Task<AuthorModel> Update(Guid guid, AuthorModel author)
     {
-        var author = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == authorId);
-        _context.Remove(author);
+        var updateAuthor = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == guid) ?? throw new Exception("No author");
+        updateAuthor.Name = author.Name;
+
+        _context.Authors.Update(updateAuthor);
         await _context.SaveChangesAsync();
-        return true;
+        return updateAuthor;
+    }
+      public async Task Delete(Guid guid)
+    {
+        var deleteAuthor = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == guid) ?? throw new Exception("No author");
+        
+        _context.Remove(deleteAuthor);
+        await _context.SaveChangesAsync();
     }
 
 }
